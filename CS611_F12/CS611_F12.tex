@@ -111,21 +111,54 @@ invertedCount)}\\
 \texttt{$\quad\quad$ invertedCount = rightIndex - resIndex}\\
 \texttt{end while}\\
 \texttt{return result}\\
+\vfill
 
 \subsection*{Question 4} Assumption:
-The set S is stored in an array\\
-The Algorithm: At each iteration, a number will be chosen to which other numbers
-will added in an attempt to achive the sum of x
-\vspace{0.5cm}\texttt{
-\raggedright CheckElementsSum(sIndex, eIndex, element, x)\\
-}
-\vspace{0.5cm}\texttt{
-\raggedright SumXOf2Elements(S,x)\\
-\ \ MergeSort(S)
-\ \ 
-}
-\vfill
-\subsection*{Question 5}
+\begin{itemize}
+  \item The set S is stored in an array
+  \item All the numbers in the given set are less than \textit{x}. If not, a
+  simple modification to the MergeSort algorithm can exclude all irrelevant
+  numbers.
+  \item None of the numbers in the set appears more than one. If not, a simple
+  modification to the MergeSort algorithm can exclude all irrelevant numbers.
+\end{itemize}
 
+The algorithm:
+\begin{itemize}
+  \item Run arrayMergeSort(set S) - complexity of $O(n log{n})$\\
+  \textit{(The same algorithm as presented in the solution to Question 3, without the counter and operations for counting
+  inverted pairs)}
+  \item Use a binary search to find \textit{half} - all members of the
+  array to the left of this number are smaller or equal to $x/2$, and the
+  members to the right of the array are bigger or equal to $x/2$ - complexity of
+  $O(log(n))$
+  \item If $indexOf(half, completeArray) < (sizeOf(completeArray))/2$ then\\
+  $\quad$ matchToArr[start] = 0\\
+  $\quad$ matchToArr[end] = indexOf(half, completeArray)\\
+  $\quad$ matchFromArr[start] = indexOf(half, completeArray) + 1\\
+  $\quad$ matchFromArr[end] =   sizeOf(completeArray)\\
+  Else\\
+  $\quad$ matchToArr[start] = indexOf(half, completeArray) + 1\\
+  $\quad$ matchToArr[end] =   sizeOf(completeArray)\\
+  $\quad$ matchFromArr[start] = 0\\
+  $\quad$ matchFromArr[end] = indexOf(half, completeArray)\\
+  \item For Each Item in matchToArray - complexity of $O(n log(n))$
+  \begin{itemize}
+    \item Use binarySearch in the matchFromArray to find the value $x - Item$
+    \item If binarySearch returns NOT NULL\\
+    $\quad$ Return TRUE and break   
+    \item Return FALSE
+  \end{itemize} 
+\end{itemize}
+
+The highest comlexity is encountered when the sorting of the complete set is
+executed. The sum  matching process will run $m log(k)$ times, where at most $m
+= k = n/2$, and in most cases $m < n/2$, hence the total matching process will
+run faster than $O((n/2) log (n/2))$
+
+\vfill
+
+\subsection*{Question 5}
+bla
 
 \end{document}
