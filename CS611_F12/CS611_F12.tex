@@ -1,0 +1,131 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+
+\begin{document}
+
+\begin{center} \LARGE\textbf{CMPSCI 611 - Advanced Algorithms}
+\Large\textbf{Homework 1}
+\vspace{0.5cm}\\Jennie Steshenko \small{(Collaboration: Emma Strubell)}
+\end{center}
+
+\section*{Question 1}
+\subsection*{Part A}
+The order of growth of functions is as follows
+\\$g_7 = (n^{1/log_2 n})^3 = 8$, 
+\\$g_{10} = (log n)^2$,
+\\$g_1 = 2^{\sqrt{log_2 n}}$,
+\\$g_3 = n(log_2 n)^3$,
+\\$g_9 = n^{1+1/log logn}\approx{n^1.2}$,
+\\$g_4 = n^{4/3}$,
+\\$g_{11} = (logn)^{log n}$,
+\\$g_5 = n^{log_2 n}$,
+\\$g_6 = 2^n$,
+\\$g_{12} = \pi^n = 3.14^n$,
+\\$g_8 = n!$,
+\\$g_2 = 2^{2^n}$
+
+\subsection*{Part B}
+\begin{enumerate}
+  \item $log {f(n)} \; is \; O(log {g(n)})$ - \textbf{True}
+    \\ $\; O(log(g(n))) = log {(cf(n))} = log c + log {f(n)}$
+	\\ $\lim_{x\to\infty}\frac{log c + log {f(n)}}{log {f(n)}} =
+	    \lim_{x\to\infty}(\frac{log c}{log {f(n)}} + \frac{log {f(n)}}{log
+	    {f(n)}}) = 0 + 1 = 1$
+  \item $2^{f(n)} \; is \; O(2^{g(n)})$ - \textbf{False}
+    \\ $\; $ Let us take $\; f(n) = x \;$ and $\; g(n) = 2x \;$ then:
+    \\ $\lim_{x\to\infty}\frac{2^{2x}}{2^x} \; =
+        \lim_{x\to\infty}\frac{2^x*2^x}{2^x} \; =
+        \lim_{x\to\infty}{2^x} \; = \infty$
+  \item $(f(n))^2 \; is \; O((g(n))^2)$ - \textbf{True}
+    \\ $\; O((g(n))^2) = (cf(n))^2 = c^2(f(n))^2$
+    \\ $\lim_{x\to\infty}\frac{c^2(f(n))^2}{(f(n))^2} = c^2$
+\end{enumerate}
+\vfill
+\subsection*{Question 2}
+\subsubsection*{Proposed Algorithm}
+The assumptions and notations used in this algorithm:
+\begin{itemize}
+  \item Arrays: A, B
+  \item Array sizes: sizeA, sizeB (e.g. the index of the last cell in array A
+  that should be checked)
+\end{itemize}
+
+\raggedright The Algorithm: The general idea is to look for the $K^{th}$
+smallest item by scanning the arrays intermintently, in a manner similar to a
+binary search.\\
+\vfill
+
+\subsection*{Question 3}
+The algorithm to solve this problem is very similar to the MergeSort algorithm,
+with one additional variable to count the number of inverted pairs, and one
+additional line in the algorithm to track the value of the variable.\\
+\textit{The suggested algorithm is a modification to an array based algorithm
+of the MergeSort algorithm on Wikipedia.org}\\
+
+\vspace{0.5cm} \texttt{function CountInvertedPairs(intArray intArr, int
+start, int end)}\\
+\texttt{// if list size is 1\, consider it sorted and return it}\\
+\texttt{if sizeOf(intArr) <= 1}\\
+\texttt{$\quad$    return intArr}\\
+\texttt{// else array size is > 1, so split the array into two subarrays}\\
+\texttt{// The counter of inverted pairs, as global}\\
+\texttt{var integer invertedCount = 0}\\
+\texttt{// The start and end of the left of the subarray }\\
+\texttt{var int leftStart, leftEnd }\\
+\texttt{// The start and end of the right of the subarray }\\
+\texttt{var int rightStart, rightEnd }\\
+\texttt{var integer middle = floor((end - start) / 2)}\\
+\texttt{// recursively call CountInvertedPairs() to further split each}\\
+\texttt{// sublist until subarray size is 1}\\
+\texttt{left = CountInvertedPairs(intArr, start, middle)}\\
+\texttt{right = CountInvertedPairs(intArr, middle + 1, end)}\\
+\texttt{// merge the sublists returned from prior calls to}\\
+\texttt{// CountInvertedPairs() and return the resulting merged sublist}\\
+\texttt{return merge(left\, right\, invertedCount)}\\
+
+\vspace{0.5cm} \texttt{function merge(intArray left, intArray right,
+invertedCount)}\\
+\texttt{var intArray result}\\
+\texttt{// Indexes to each of the arrays - left, right and result}\\
+\texttt{var int leftIndex = 0, rightIndex = 0, resIndex = 0}\\
+\texttt{while sizeOf(left) > 0 or sizeOf(right) > 0}\\
+\texttt{$\quad$ if sizeOf(left) > 0 and sizeOf(right) > 0}\\
+\texttt{$\quad\quad$ if left[leftIndex] <= right[rightIndex]}\\
+\texttt{$\quad\quad\quad$ result[resIndex] = left[leftIndex]}\\
+\texttt{$\quad\quad\quad$ leftIndex++}\\
+\texttt{$\quad\quad\quad$ resIndex++}\\
+\texttt{$\quad\quad$ else}\\
+\texttt{$\quad\quad\quad$ result[resIndex] = right[rightindex]}\\
+\texttt{$\quad\quad\quad$ rightIndex++}\\
+\texttt{$\quad\quad\quad$ resIndex++}\\
+\texttt{$\quad\quad\quad$ invertedCount = rightIndex - resIndex}\\
+\texttt{$\quad$ else if sizeOf(left) > 0}\\
+\texttt{$\quad\quad$ result[resIndex] = left[leftIndex]}\\
+\texttt{$\quad\quad$ leftIndex++}\\
+\texttt{$\quad\quad$ resIndex++}\\
+\texttt{$\quad$ else if sizeOf(right) > 0}\\
+\texttt{$\quad\quad$ result[resIndex] = right[rightindex]}\\
+\texttt{$\quad\quad$ rightIndex++}\\
+\texttt{$\quad\quad$ resIndex++}\\
+\texttt{$\quad\quad$ invertedCount = rightIndex - resIndex}\\
+\texttt{end while}\\
+\texttt{return result}\\
+
+\subsection*{Question 4} Assumption:
+The set S is stored in an array\\
+The Algorithm: At each iteration, a number will be chosen to which other numbers
+will added in an attempt to achive the sum of x
+\vspace{0.5cm}\texttt{
+\raggedright CheckElementsSum(sIndex, eIndex, element, x)\\
+}
+\vspace{0.5cm}\texttt{
+\raggedright SumXOf2Elements(S,x)\\
+\ \ MergeSort(S)
+\ \ 
+}
+\vfill
+\subsection*{Question 5}
+
+
+\end{document}

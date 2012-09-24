@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Fri Sep 14 22:25:12 EDT 2012
+markTmpDer=true
+builderNum=6
+outputDir=
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=CS611_F12.tex
+outputFile=CS611_F12.pdf
+langSpell=en
+markDer=true
+srcDir=
