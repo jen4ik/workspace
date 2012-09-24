@@ -159,6 +159,21 @@ run faster than $O((n/2) log (n/2))$
 \vfill
 
 \subsection*{Question 5}
-bla
+\indent The algorithm used to build spanning trees with minimal weight is
+Kruskal's algorithm, which is greedy. At each iteration, the algorithm chooses
+the next best candidate, in this case, the next edge with minimal weight that is
+available for choosing.
+ 
+\indent In order to have two different trees with the same minimal wight, the
+algorithm must be able to chose 2 different subsets of edges that have the same sum
+of weights. Since the algoritm is greedy, that can happen only in the case when
+there are 2 edges with the same weight, that lead to different nodes, thus
+allowing the existence of different final sets when the algorithm has finished
+running. 
+
+\indent However, it is indicated that all edges in the given set are of
+different wieght, thus every time the algoritm will run it will make exactlyl
+the same choices, thus each time the exact same minimal spanning tree will be
+built.
 
 \end{document}
