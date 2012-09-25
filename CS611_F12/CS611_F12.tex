@@ -6,7 +6,8 @@
 
 \begin{center} \LARGE\textbf{CMPSCI 611 - Advanced Algorithms}
 \Large\textbf{Homework 1}
-\vspace{0.5cm}\\Jennie Steshenko \small{(Collaboration: Emma Strubell)}
+\vspace{0.5cm}\\Jennie Steshenko \small{(Collaboration: Emma Strubell)}\\
+Estimated amount of hours invested in the assignment: 30
 \end{center}
 
 \section*{Question 1}
@@ -46,6 +47,7 @@ n}}}{n\log_2^3n} = \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 (n\log^3n)}
 $\log n$ grows faster than $\sqrt{\log n}$, hence the ratio test
 gives 0, and $2^{\sqrt{\log n}} \in o(n\log^3n)$\\
 \clearpage
+
 $g_3 = O(g_9):\\
 n^{\frac{1}{\log_2 \log_2 n}} \, ? \, (\log_2 n)^3\\
 \frac{1}{\log_2 \log_2 n} \, ? \, \log_n (\log_2 n)^3 = \frac{\log_2(\log_2
@@ -99,24 +101,26 @@ sufficient to show that $n^n \in O(2^{2^n})\\
 \lim_{n\to\infty}\frac{\log_n n^n/\log_n2}{2^n} = 
 \lim_{n\to\infty}\frac{n}{2^n\cdot\log_n2} = 0$\\
 \clearpage
+
 \subsection*{Part B}
 \begin{enumerate}
-  \item $log {f(n)} \; is \; O(log {g(n)})$ - \textbf{True}
-    \\ $\; O(log(g(n))) = log {(cf(n))} = log c + log {f(n)}$
-	\\ $\lim_{x\to\infty}\frac{log c + log {f(n)}}{log {f(n)}} =
-	    \lim_{x\to\infty}(\frac{log c}{log {f(n)}} + \frac{log {f(n)}}{log
-	    {f(n)}}) = 0 + 1 = 1$
+  \item $log {f(n)} \; is \; O(log {g(n)})$ - \textbf{False}
+    \\ Let us take $f(x) = 3 - 1/x$ and $g(x) = 1$\\
+    $f(x) \in O(g(x))$ because for c = 4, $\forall x. 4\cdot{g(x)>f(x)}$\\
+    However, $\log{g(x)}=\log{1}=0; \neg\exists c \in N$.$c \cdot{g(x)}> 0$\\
+    And $\log{f(x)} = \log{(5-1/x)} > 0$
   \item $2^{f(n)} \; is \; O(2^{g(n)})$ - \textbf{False}
     \\ $\; $ Let us take $\; f(n) = x \;$ and $\; g(n) = 2x \;$ then:
     \\ $\lim_{x\to\infty}\frac{2x}{x} = lim_{x\to\infty}2\frac{x}{x} = 2$
     \\ $\lim_{x\to\infty}\frac{2^{2x}}{2^x} \; =
-        \lim_{x\to\infty}\frac{2^x*2^x}{2^x} \; =
+        \lim_{x\to\infty}\frac{2^x \times 2^x}{2^x} \; =
         \lim_{x\to\infty}{2^x} \; = \infty$
   \item $(f(n))^2 \; is \; O((g(n))^2)$ - \textbf{True}
     \\ $\; O((g(n))^2) = (cf(n))^2 = c^2(f(n))^2$
     \\ $\lim_{x\to\infty}\frac{c^2(f(n))^2}{(f(n))^2} = c^2$
 \end{enumerate}
 \clearpage
+
 \subsection*{Question 2}
 \subsubsection*{Proposed Algorithm}
 Assumption: The array index counters start at 1
@@ -154,8 +158,7 @@ In the other array, everything bigger than the median is also bigger the the med
 the first array. Thus, by excluding these parts from the search area, we ensure
 that we ignore only that which trivially is not close to the median.\\
 This repeats until no other items can be discarded, and thus we find the n-th
-smallest element in the array
-
+smallest element in the array.
 \clearpage
 
 \subsection*{Question 3}
@@ -213,7 +216,17 @@ invertedCount)}\\
 \texttt{$\quad\quad$ invertedCount = rightIndex - resIndex}\\
 \texttt{end while}\\
 \texttt{return result}\\
-\vfill
+
+Justification: The total running time is $O(n\log n)$ as the basic MergeSort
+algorithm is used, and the only addition is a simple arthmetic operation during
+the merge steps.
+
+Correcteness: When merging the left and right parts that are being sorted, each
+time that an object from the right part is chosen over an object from the left
+part it means that its value is smaller than the remaining objects in the left
+part, thus the difference in index space indicates how many object are bigger
+than that object
+\clearpage
 
 \subsection*{Question 4} Assumption:
 \begin{itemize}
@@ -253,12 +266,18 @@ The algorithm:
   \end{itemize} 
 \end{itemize}
 
-The highest comlexity is encountered when the sorting of the complete set is
-executed. The sum  matching process will run $m log(k)$ times, where at most $m
+Justification: The highest comlexity is encountered when the sorting of the
+complete set is executed. The sum  matching process will run $m log(k)$ times, where at most $m
 = k = n/2$, and in most cases $m < n/2$, hence the total matching process will
 run faster than $O((n/2) log (n/2))$
 
-\vfill
+Correctness: The algorithm scans once each of the numbers smaller (bigger) than
+$x/2$, and at least once all of the numbers bigger (smaller) than $x/2$ in an
+attempt to find an exact match to achieve a sum of $x$. If such a pair exists,
+TRUE will be returned. Otherwise, if all scans were unsuccessful, FALSE is
+returned.
+
+\clearpage
 
 \subsection*{Question 5}
 This is a simple proof by induction.
