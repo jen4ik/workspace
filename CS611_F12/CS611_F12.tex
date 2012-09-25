@@ -71,43 +71,36 @@ $g4 = O(g11):\\
 $g_{11} = O(g_5):\\
 \log n^{\log n} = \overbrace {\log n \times \log n \times ... \times \log
 n}^{k = \log n \mathrm{\ times}}\\
-n^{\log n} = \overbrace {n \times n \times ... \times n}^{k = \log n \mathrm{\
-times}}$
+n^{\log n} = \overbrace {n \times n \times ... \times n}^{k = \log n \mathrm
+{\ times}}$
 Since $\log n \in O(n)$, clearly $\log n^{\log n} \in O(n^{\log n})$\\
 
 $g_5 = O(g_6):\\
 \lim_{n\to\infty}\frac{n^{\log n}}{2^n} = 
 \lim_{n\to\infty}\frac{\log n^{\log n}}{n} = 
-\lim_{n\to\infty}\frac{\log_n n^{\log n}/\log_n2}{n} =
-\lim_{n\to\infty}\frac{\log n}{\log_n2\cdot n} = 0$\\
-Because $\lg n \in O(n)$, the ratio test gives 0 and $n^{\lg n} \in o(2^n)$.
+\lim_{n\to\infty}\frac{\log n \times \log n}{n} =
+\lim_{n\to\infty}\frac{\log^2 n}{n} = 0$\\
+If the top function would have been $(\sqrt{n})^2$, the ratio in the $\lim$
+would have been equal to 1, but it is knows that $\log n \in O(\sqrt n)$, hence
+$\log n$ grows slower and the ratio is equal to 0\\
 
 $g_{12} = O(g_8):\\
-\pi^{n} = \overbrace{\pi \times \pi \times ... \times \pi}^{n \mathrm{\times}}\\
-n! = 1 \times 2 \times 3 \times 4 \times ... \times n$
+\pi^{n} = \overbrace{\pi \times \pi \times ... \times \pi}^{n \mathrm
+{\ times}}\\
+n! = 1 \times 2 \times 3 \times 4 \times ... \times n$\\
+According to Stirling's approximation $n!$ can be viewd as 
+$n! = \overbrace{n \times n \times \ldots \times n}^{n \mathrm {\ times}} $.
+Each number larger than 4 will increase the product much more significantly
+than just\\ another multiplication by $\pi$\\
 
-
-g8 = O(g2) (i think the change-of-base stuff is correct in this one, have
-to go back and re-do the others):
-
-We know by Stirling's approximation that $n! = O(n^n)$. So, it is
+$g8 = O(g2):$\\
+ According to Stirling's approximation $n! = O(n^n)$. So, it is
 sufficient to show that $n^n \in O(2^{2^n})\\
-\lim_{n \to \infty}\frac{n^n}{2^{2^n}} = \lim_{n \to \infty}\frac{\lg
-n^n}{2^n} = \lim_{n \to \infty}\frac{\log_n n^n/\log_n2}{2^n} = \lim_{n \to
-\infty}\frac{n}{\log_n2\cdot2^n} = 0$
-
-Because $\log_n2$ is a constant and $n \in O(2^n)$, the ratio test gives
-zero and $n^n \in o(2^{2^n})$, which implies that $n! \in O(2^{2^n})$
-
-We know by Stirling's approximation that $n! = O(n^n)$. So, it is
-sufficient to show that $n^n \in O(2^{2^n})$.
-$
-\lim_{n \to \infty}\frac{n^n}{2^{2^n}} = \lim_{n \to \infty}\frac{\lg
-n^n}{2^n} = \lim_{n \to \infty}\frac{\log_n n^n/\log_n2}{2^n} = \lim_{n \to
-\infty}\frac{n}{\log_n2\cdot2^n} = 0;$
- \\ Because $\log_n 2$ is a constant and $n \in O(2^n)$, the ratio test gives
- zero and $n^n \in o(2^{2^n})$, which implies that $n! \in O(2^{2^n})$
-
+\lim_{n\to\infty}\frac{n^n}{2^{2^n}} = 
+\lim_{n\to\infty}\frac{\log n^n}{2^n} = 
+\lim_{n\to\infty}\frac{\log_n n^n/\log_n2}{2^n} = 
+\lim_{n\to\infty}\frac{n}{2^n\cdot\log_n2} = 0$\\
+\vfill
 \subsection*{Part B}
 \begin{enumerate}
   \item $log {f(n)} \; is \; O(log {g(n)})$ - \textbf{True}
