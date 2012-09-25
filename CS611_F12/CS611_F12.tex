@@ -28,6 +28,16 @@ $g_2 = 2^{2^n}$\\
 
 Explanations for the ordering\\
 
+$g_{10} = O(g_1):\\
+\lim_{n\to\infty}\frac{\log^2n}{2^{\sqrt{\log n}}} =
+\lim_{n\to\infty}\frac{2\log n}{2^{\sqrt{\log n}}} =
+2\lim_{n\to\infty}\frac{\log\log n}{\log2^{\sqrt{\log n}}} = 
+2\lim_{n\to\infty}\frac{\log\log n}{\sqrt{\log n}} =  
+2\lim_{n\to\infty}\frac{\log\log\log n}{\log\log^{1/2}n} =
+2\lim_{n\to\infty}\frac{\log\log\log n}{1/2\log\log n} = 
+4\lim_{n\to\infty}\frac{\log\log\log n}{1\log\log n} = 0$\\
+$\log\log\log n$ grows slower than $\log\log n$, hence the ratio test gives 0\\
+
 $g1 = O(g3):\\
 \lim_{n\to\infty}\frac{g_1}{g_3} = \lim_{n\to\infty}\frac{2^{\sqrt{\log_2
 n}}}{n\log_2^3n} = \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 (n\log^3n)}
@@ -35,6 +45,8 @@ n}}}{n\log_2^3n} = \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 (n\log^3n)}
 \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 n + 3\log_2\log n} = 0$\\
 $\log n$ grows faster than $\sqrt{\log n}$, hence the ratio test
 gives 0, and $2^{\sqrt{\log n}} \in o(n\log^3n)$\\
+
+\vfill
 
 $g_3 = O(g_9):\\
 n^{\frac{1}{\log_2 \log_2 n}} \, ? \, (\log_2 n)^3\\
@@ -58,17 +70,16 @@ $g4 = O(g11):\\
 
 $g_{11} = O(g_5):\\
 \log n^{\log n} = \overbrace {\log n \times \log n \times ... \times \log
-n}^{\log n \mathrm{\ times}}\\
-n^{\log n} = \overbrace {n \times n \times ... \times n}^{\log n \mathrm{\
+n}^{k = \log n \mathrm{\ times}}\\
+n^{\log n} = \overbrace {n \times n \times ... \times n}^{k = \log n \mathrm{\
 times}}$
-Since we know that $\log n \in O(n)$, clearly $\log n^{\log n} \in O(n^{\log
-n})$
+Since $\log n \in O(n)$, clearly $\log n^{\log n} \in O(n^{\log n})$\\
 
-
-$g5 = O(g6):
-\lim_{n \to \infty}\frac{n^{\lg n}}{2^n} = \lim_{n \to \infty}\frac{\lg
-n^{\lg n}}{n} = \lim_{n \to \infty}\frac{\log_n n^{\lg n}/\log_n2}{n} =
-\lim_{n \to \infty}\frac{\lg n}{\log_n2\cdot n} = 0$
+$g_5 = O(g_6):\\
+\lim_{n\to\infty}\frac{n^{\log n}}{2^n} = 
+\lim_{n\to\infty}\frac{\log n^{\log n}}{n} = 
+\lim_{n\to\infty}\frac{\log_n n^{\log n}/\log_n2}{n} =
+\lim_{n\to\infty}\frac{\log n}{\log_n2\cdot n} = 0$\\
 Because $\lg n \in O(n)$, the ratio test gives 0 and $n^{\lg n} \in o(2^n)$.
 
 $g_{12} = O(g_8):\\
