@@ -45,9 +45,7 @@ n}}}{n\log_2^3n} = \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 (n\log^3n)}
 \lim_{n\to\infty}\frac{\sqrt{\log_2 n}}{\log_2 n + 3\log_2\log n} = 0$\\
 $\log n$ grows faster than $\sqrt{\log n}$, hence the ratio test
 gives 0, and $2^{\sqrt{\log n}} \in o(n\log^3n)$\\
-
-\vfill
-
+\clearpage
 $g_3 = O(g_9):\\
 n^{\frac{1}{\log_2 \log_2 n}} \, ? \, (\log_2 n)^3\\
 \frac{1}{\log_2 \log_2 n} \, ? \, \log_n (\log_2 n)^3 = \frac{\log_2(\log_2
@@ -100,7 +98,7 @@ sufficient to show that $n^n \in O(2^{2^n})\\
 \lim_{n\to\infty}\frac{\log n^n}{2^n} = 
 \lim_{n\to\infty}\frac{\log_n n^n/\log_n2}{2^n} = 
 \lim_{n\to\infty}\frac{n}{2^n\cdot\log_n2} = 0$\\
-\vfill
+\clearpage
 \subsection*{Part B}
 \begin{enumerate}
   \item $log {f(n)} \; is \; O(log {g(n)})$ - \textbf{True}
@@ -118,20 +116,47 @@ sufficient to show that $n^n \in O(2^{2^n})\\
     \\ $\; O((g(n))^2) = (cf(n))^2 = c^2(f(n))^2$
     \\ $\lim_{x\to\infty}\frac{c^2(f(n))^2}{(f(n))^2} = c^2$
 \end{enumerate}
-\vfill
+\clearpage
 \subsection*{Question 2}
 \subsubsection*{Proposed Algorithm}
-The assumptions and notations used in this algorithm:
+Assumption: The array index counters start at 1
 \begin{itemize}
-  \item Arrays: A, B
-  \item Array sizes: sizeA, sizeB (e.g. the index of the last cell in array A
-  that should be checked)
+  \item set partitionSize = $n/4$
+  \item set medianA = medianB = $n/2$
+  \item while not partitionSize == 0
+  \begin{itemize}
+    \item if arrayA[medianA] $>$ arrayB[medianB]\\
+    medianA -= partitionSize\\
+    medianB += partitionSize\\
+    else\\
+    medianA += partitionSize\\
+    medianB -= partitionSize
+    \item partitionSize *= 0.5
+  \end{itemize}
+  \item if arrayA[medianA] $>$ arrayB[medianB]\\
+  medianB ++\\
+  else\\
+  medianA ++
+  \item if arrayA[medianA] $>$ arrayB[medianB]\\
+  return arrayB[medianB]\\
+  else\\
+  return arrayA[medianA]
 \end{itemize}
 
-\raggedright The Algorithm: The general idea is to look for the $K^{th}$
-smallest item by scanning the arrays intermintently, in a manner similar to a
-binary search.\\
-\vfill
+Justification: total running time is $O(\log n)$ as each time that the while
+loop is called, the examined size of the arrays decreases in half, and all other
+operations are basic comparison and arithmetic operations.
+
+Correctness: We start from looking at the element in the middle of each of the
+arrays. In the array that has the smaller median, all the  numbers smaller than
+that number are definitely smaller than the median in the other array as well.
+In the other array, everything bigger than the median is also bigger the the median of
+the first array. Thus, by excluding these parts from the search area, we ensure
+that we ignore only that which trivially is not close to the median.\\
+This repeats until no other items can be discarded, and thus we find the n-th
+smallest element in the array
+
+\clearpage
 
 \subsection*{Question 3}
 The algorithm to solve this problem is very similar to the MergeSort algorithm,
