@@ -1,0 +1,47 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+
+\begin{document}
+
+\begin{center} \LARGE\textbf{CMPSCI 611 - Advanced Algorithms}
+\Large\textbf{Homework 1}
+\vspace{0.5cm}\\Jennie Steshenko\\
+\small{(Collaboration: Emma Strubell, Patrick Vergas)}\\
+Estimated amount of hours invested in the assignment: 30
+\end{center}
+
+\section*{Question 1}
+
+
+\subsection*{Question 2}
+\subsubsection*{Proposed Algorithm}
+
+\subsection*{Question 3}
+
+For (E, I) to be a matroid, it has to satisfy the exchange property and the cardinality property.
+
+\textbf{The Exchange Property:} According to the problem statement:\\
+For $A, B \in I\:$\\
+$\mid A \mid = k \Rightarrow \sum_{i=1}^N \left( \mid A \cap E_i \mid = 1 \right) = k$,\\ 
+$\mid B \mid = j < k \Rightarrow \sum_{i=1}^N \left( \mid B \cap E_i \mid = 1 \right) < k $\\
+Thus, $\exists e \in E_i \cdot \left(  A \cap E_i = \{ e \} \wedge B \cap E_i = \phi \right)$\\
+Thus $B \cup \{e \} \in I$\\
+Thus the Exchange Property is maintained
+
+\textbf{The Cardinality Property:} According to the problem statement:\\
+For $A, B \in I$, $\mid A \mid = \mid B \mid = \mid I \mid = k$\\
+$\sum_{i=1}^N \left( \mid A \cap E_i \mid = 1 \right) = 
+\sum_{i=1}^N \left( \mid B \cap E_i \mid = 1 \right)= k$\\
+Thus, $\neg\exists E_i \in I \cdot \left( A \cap E_i = \phi \vee B \cap E_i = \phi \right)$\\
+Thus A and B are maximal and of equal size, and maintain the Cardinality property.
+
+\subsection*{Question 4}
+
+
+\clearpage
+
+\subsection*{Question 5}
+
+\subsection*{Question 6}
+\end{document}
