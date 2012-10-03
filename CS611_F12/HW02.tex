@@ -12,7 +12,19 @@ Estimated amount of hours invested in the assignment: 30
 \end{center}
 
 \section*{Question 1}
+The proposed solution relies on the Augmenting Paths algorithm.
+\begin{itemize}
+  \item At first, we will take our graph, and split each of the vertices to $v_{in} \, and \, v_{out}$. While splitting each of the vertices, we will add an edge between each $v_{in} \, and \, v_{out}$.\\ This takes $O(\mid V \mid)$ operations.
+  \item After doing that, we'll take each of the edges, direct it between its original vertices, with a slight modification, i.e. if an edge was $e=(u,v)$ then now it will be $e=(u_{out}, v_{in})$.\\ 
+  This takes $O(\mid E \mid)$ operations.\\
+  At this point, we have a bipartite graph.
+  \item Finally, we can execute the Augmenting Paths algorithm, with another slight modification. Each itteration of the algoritm may only begin from a vertex on the "out" side.\\
+  At this point we have $\mid 2V \mid$ vertices and $\mid E + V \mid$ edges. Hence, total execution time is $O(\mid E + V \mid \cdot \mid V \mid)$
+\end{itemize}
 
+\textbf{Correctness:} The Augmenting Path algoritm will match every vertex on the "out" side with exactly one vertex on the "in" side, thus assuring that each vertex in the original graph will have \textit{in-dgree = out-degree = 1}. The result will be a maximal result. Both of these are provided by the behaviour of the original Augmenting Path algorithm.
+
+\textbf{Complexity:} The highest complexity is when the matching is being done, hence total run-time will be $O(\mid E + V \mid \cdot \mid V \mid)$.
 
 \subsection*{Question 2}
 \subsubsection*{Proposed Algorithm}
