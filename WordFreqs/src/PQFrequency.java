@@ -45,20 +45,29 @@ public class PQFrequency {
 	}
 	
 	public static void wordEnqueue (PriorityQueue<PQWordFreq> f, PriorityQueue<PQWordFreq> w) {
+		Iterator<PQWordFreq> itr = f.iterator();
+		PQWordFreq tmp = new PQWordFreq(null);
 		
+		if (f.size() == 0) {
+			System.out.println("None of the words matched the criteria");
+		} else {
+			while (itr.hasNext()) {				
+				tmp = (PQWordFreq)itr.next();
+				w.add(tmp);
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
 		
 	    String word;
 	    PQWordFreq wordToTry;
-	    PQWordFreq wordInPQ;
-	    PQWordFreq wordFromPQ;
+	    PQWordFreq wordFromPQ = null;
 
 	    PriorityQueue<PQWordFreq> fpq = new PriorityQueue<PQWordFreq>(10, new FreqComparator());
 		
 		String skip;        // skip end of line after reading integer
-		String fileName;	// filename to be scanned
+		String fileName = null;	// filename to be scanned
 		
 		int numWords = 0;
 	    int numValidWords = 0;
@@ -106,7 +115,7 @@ public class PQFrequency {
 		// Set up file reading
 	    FileReader fin = null;
 		try {
-			fin = new FileReader("Federalists.dat");
+			fin = new FileReader(fileName);
 		} catch (FileNotFoundException e) {
 			System.out.println("Could not read from file! Aborting...");
 	        System.exit(1);
@@ -125,9 +134,6 @@ public class PQFrequency {
 	        wordToTry = new PQWordFreq(word);
 	        freqEnqueue(wordToTry, fpq);
 	      }
-	      if (numWords % 20 == 0) {
-	    	  System.out.println(numWords);
-	      }
 	    }
 		
 		System.out.println("----- -----------------");
@@ -141,15 +147,35 @@ public class PQFrequency {
 	    System.out.println("Freq  Word");
 	    System.out.println("----- -----------------");
 	    
-	    //PriorityQueue<PQWordFreq> wpq = new PriorityQueue<PQWordFreq>(fpq.size(), new WordComparator());
+	    
 	    for (int count = 1; count <= fpq.size(); count++)
 	    {
-	    	wordFromPQ = fpq.poll();
+	    	wordFromPQ = (PQWordFreq)fpq.poll();
 	      if (wordFromPQ.freqIs() >= minFreq)
 	      {
 	        numValidFreqs++;
 	        System.out.println(wordFromPQ.toString());
 	      }
+	    }
+	    
+	    PriorityQueue<PQWordFreq> wpq = new PriorityQueue<PQWordFreq>(fpq.size(), new WordComparator());
+	    wordEnqueue(fpq, wpq);
+		System.out.println("----- -----------------");
+		System.out.println("size of wpq is: " + wpq.size());
+		System.out.println("----- -----------------");
+	    
+	    System.out.println();
+	    System.out.println("Freq  Word");
+	    System.out.println("----- -----------------");
+	    
+	    for (int count = 1; count <= wpq.size(); count++)
+	    {
+	    	wordFromPQ = (PQWordFreq)wpq.poll();
+	      /*if (wordFromPQ.freqIs() >= minFreq)
+	      {*/
+	        numValidFreqs++;
+	        System.out.println(wordFromPQ.toString());
+	      //}
 	    }
 	
 	    System.out.println();  
