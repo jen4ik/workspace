@@ -10,11 +10,12 @@ public class MultitextFrequency {
 	public int minLen = 6;
 	public int sCount = 0; // number of separator occurences, indicating number of items
 	
-	public PriorityQueue<PQWordFreq> corpus = new PriorityQueue<PQWordFreq>(10, new FreqComparator());
+	public PQFrequency corpus;
 	
 	public MultitextFrequency (String sprtr, String fileName) {
 		separator = sprtr + " ";
 		inputFile = fileName;
+		corpus  = new PQFrequency();
 	}
 	
 	public double tfidf() {
