@@ -35,6 +35,11 @@ public class PQWordFreq implements Comparable<PQWordFreq> {
 	    return this.word.compareTo(other.word); 
 	}
 	
+	public boolean equals(PQWordFreq other)
+	{
+	    return this.word.equals(other.word); 
+	}
+	
 	public String toString()
 	{
 	    return(fmt.format(freq) + " " + word);
