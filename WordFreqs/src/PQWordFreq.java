@@ -22,28 +22,32 @@ public class PQWordFreq implements Comparable<PQWordFreq> {
 	}*/
 	
 	public void inc()
-  {
-    freq++;
-  }
-
-  public int compareTo(PQWordFreq other)
-  {
-    return this.word.compareTo(other.word); 
-  }
-
-  public String toString()
-  {
-    return(fmt.format(freq) + " " + word);
-  }
-
-  public String wordIs()
-  {
-    return word;
-  }
-
-  public int freqIs()
-  {
-    return freq;
-  }
+	{
+	    freq++;
+	}
+	
+	public void dec () {
+		freq--;
+	}
+	
+	public int compareTo(PQWordFreq other)
+	{
+	    return this.word.compareTo(other.word); 
+	}
+	
+	public String toString()
+	{
+	    return(fmt.format(freq) + " " + word);
+	}
+	
+	public String wordIs()
+	{
+	    return word;
+	}
+	
+	public int freqIs()
+	{
+	    return freq;
+	}
 
 }

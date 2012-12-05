@@ -1,5 +1,8 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import java.util.Iterator;
 import java.util.Scanner;
@@ -19,46 +22,89 @@ import java.util.PriorityQueue;
 public class PQFrequency {
 	
 	
-
+	/*
+	 * The method is used to add words to the priority queue, when their frequency is the priority value
+	 * First search the queue to check if the word is there
+	 * If yes - increment freq by one and reinsert
+	 * Else - increment freq by one and just insert
+	 */
 	public static void freqEnqueue (PQWordFreq pqw, PriorityQueue<PQWordFreq> pq) {
 		Iterator<PQWordFreq> itr = pq.iterator();
 		PQWordFreq tmp = new PQWordFreq(null);
 		
 		if (pq.peek() == null) {
+			// The queue is empty so we just add the word after incrementing its freq to 1
 			pqw.inc();
 			pq.add(pqw);
 		} else {
+			// The queue is not empty, so we check if the word already in the queue
+			// Take the first thing in the queue so we have something to start from
 			tmp = (PQWordFreq)itr.next();
 			while (itr.hasNext() && !(tmp.compareTo(pqw) == 0)) {
+				// We'll stop iterating if we reach the end of the queue or we found a match to the word
 				tmp = (PQWordFreq)itr.next();						
 			}
 			
 			if (tmp.compareTo(pqw) == 0) {
+				// We stopped looking for things because we found a match so:
+				// 1. Remove from queue
+				// 2. Increase frequency
+				// 3. Add to queue with update frequency
 				itr.remove();
 				tmp.inc();
 				pq.add(tmp);
 			} else {
+				// We stopped searching at the end of the queue and didn't find a match so:
+				// Increment freq to 1 and add to queue
 				pqw.inc();
 				pq.add(pqw);
 			}
 		}
 	}
 	
-	public static void wordEnqueue (PriorityQueue<PQWordFreq> f, PriorityQueue<PQWordFreq> w) {
-		Iterator<PQWordFreq> itr = f.iterator();
+	public static void wordEnqueue (PQWordFreq pqw, PriorityQueue<PQWordFreq> wq) {
+		Iterator<PQWordFreq> itr = wq.iterator();
 		PQWordFreq tmp = new PQWordFreq(null);
 		
-		if (f.size() == 0) {
-			System.out.println("None of the words matched the criteria");
+		if (wq.peek() == null) {
+			// The queue is empty so we just add the word after incrementing its freq to 1
+			pqw.inc();
+			wq.add(pqw);
 		} else {
-			while (itr.hasNext()) {				
-				tmp = (PQWordFreq)itr.next();
-				w.add(tmp);
+			// The queue is not empty, so we check if the word already in the queue
+			// Take the first thing in the queue so we have something to start from
+			tmp = (PQWordFreq)itr.next();
+			while (itr.hasNext() && !(tmp.compareTo(pqw) == 0)) {
+				// We'll stop iterating if we reach the end of the queue or we found a match to the word
+				tmp = (PQWordFreq)itr.next();						
+			}
+			
+			if (tmp.compareTo(pqw) == 0) {
+				// We stopped looking for things because we found a match so:
+				// 1. Remove from queue
+				// 2. Increase frequency
+				// 3. Add to queue with update frequency
+				itr.remove();
+				tmp.inc();
+				wq.add(tmp);
+			} else {
+				// We stopped searching at the end of the queue and didn't find a match so:
+				// Increment freq to 1 and add to queue
+				pqw.inc();
+				wq.add(pqw);
 			}
 		}
 	}
 	
-	public static void main(String[] args) {
+	/*
+	 * This method is used to write the same output both to the console and to a file
+	 */
+	public static void writeOut (PrintWriter fo, String str) {
+		System.out.print(str);
+		fo.print(str);
+		
+	}
+	public static void main(String[] args) throws IOException {
 		
 	    String word;
 	    PQWordFreq wordToTry;
@@ -92,6 +138,7 @@ public class PQFrequency {
 		    
 		    conIn.close();
 		} else if (args.length == 3) {
+			// Trying to get input from console
 			try {
 				minSize = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
@@ -132,58 +179,57 @@ public class PQFrequency {
 	        numValidWords++;
 	        word = word.toLowerCase();
 	        wordToTry = new PQWordFreq(word);
+	        // Adding word to Priority Queue according to frequency
 	        freqEnqueue(wordToTry, fpq);
 	      }
 	    }
 		
-		System.out.println("----- -----------------");
-		System.out.println("size of fpq is: " + fpq.size());
-		System.out.println("----- -----------------");
-		
-	  
-	    System.out.println("The words of length " + minSize + " and above,");
-	    System.out.println("with frequency counts of " + minFreq + " and above:");
-	    System.out.println();
-	    System.out.println("Freq  Word");
-	    System.out.println("----- -----------------");
+		// Setting up for writing output to file
+		FileWriter fout = new FileWriter("report.dat", false);
+		PrintWriter fileout = new PrintWriter(fout,false);		
 	    
+		// Helper queue to store words tuples in alphabetical order
+		PriorityQueue<PQWordFreq> wpq = new PriorityQueue<PQWordFreq>(fpq.size(), new WordComparator());	    
 	    
 	    for (int count = 1; count <= fpq.size(); count++)
 	    {
 	    	wordFromPQ = (PQWordFreq)fpq.poll();
-	      if (wordFromPQ.freqIs() >= minFreq)
-	      {
-	        numValidFreqs++;
-	        System.out.println(wordFromPQ.toString());
-	      }
+	    	
+	    	if (wordFromPQ.freqIs() >= minFreq)
+	    	{
+	    		numValidFreqs++;
+	    		// If the word matches our criteria, we want to insert it into the helper queue but 
+	    		// we don't want to increase its frequency count again
+	    		wordFromPQ.dec();
+	    		freqEnqueue(wordFromPQ, wpq);
+	    	}
 	    }
 	    
-	    PriorityQueue<PQWordFreq> wpq = new PriorityQueue<PQWordFreq>(fpq.size(), new WordComparator());
-	    wordEnqueue(fpq, wpq);
-		System.out.println("----- -----------------");
-		System.out.println("size of wpq is: " + wpq.size());
-		System.out.println("----- -----------------");
+	    // Writing output in DJW format
+	    writeOut(fileout, "----- -----------------\n");
+	    writeOut(fileout, "size of Priority Queue is: " + wpq.size() + "\n");
+	    writeOut(fileout, "----- -----------------\n");
 	    
-	    System.out.println();
-	    System.out.println("Freq  Word");
-	    System.out.println("----- -----------------");
+	    writeOut(fileout, "\n");
+	    writeOut(fileout, "Freq  Word\n");
+	    writeOut(fileout, "----- -----------------\n");
 	    
-	    for (int count = 1; count <= wpq.size(); count++)
+	    int laps = wpq.size();
+	    
+	    for (int count = 1; count <= laps; count++)
 	    {
 	    	wordFromPQ = (PQWordFreq)wpq.poll();
-	      /*if (wordFromPQ.freqIs() >= minFreq)
-	      {*/
-	        numValidFreqs++;
-	        System.out.println(wordFromPQ.toString());
-	      //}
+	        writeOut(fileout, wordFromPQ.toString() + "\n");
 	    }
 	
-	    System.out.println();  
-	    System.out.println(numWords + " words in the input file.  ");
-	    System.out.println(numValidWords + " of them are at least " + minSize + " characters.");
-	    System.out.println(numValidFreqs + " of these occur at least " + minFreq + " times.");
-	    System.out.println("Program completed.");
+	    writeOut(fileout, "\n");  
+	    writeOut(fileout, numWords + " words in the input file.  \n");
+	    writeOut(fileout, numValidWords + " of them are at least " + minSize + " characters.\n");
+	    writeOut(fileout, numValidFreqs + " of these occur at least " + minFreq + " times.\n");
+	    writeOut(fileout, "Program completed.\n");
 	    
+	    // Avoiding memory leaks
+	    fileout.close();
 	    wordsIn.close();
 
 	}
