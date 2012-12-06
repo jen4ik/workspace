@@ -1,41 +1,26 @@
 
 import java.text.DecimalFormat;
 
-public class PQWordFreq implements Comparable<PQWordFreq> {
+public class PQFloatFreq implements Comparable<PQFloatFreq> {
 	
 	private String word;
-	private int freq;
+	private float freq;
 
 	DecimalFormat fmt = new DecimalFormat("00000");
 
 
-	public PQWordFreq(String newWord)
+	public PQFloatFreq(String newWord)
 	{
 		word = newWord;
 	    freq = 0;
 	}
 	
-	/*public PQWordFreq(String newWord, int newFreq)
-	{
-		word = newWord;
-	    freq = newFreq;
-	}*/
-	
-	public void inc()
-	{
-	    freq++;
-	}
-	
-	public void dec () {
-		freq--;
-	}
-	
-	public int compareTo(PQWordFreq other)
+	public int compareTo(PQFloatFreq other)
 	{
 	    return this.word.compareTo(other.word); 
 	}
 	
-	public boolean equals(PQWordFreq other)
+	public boolean equals(PQFloatFreq other)
 	{
 	    return this.word.equals(other.word); 
 	}
@@ -50,7 +35,7 @@ public class PQWordFreq implements Comparable<PQWordFreq> {
 	    return word;
 	}
 	
-	public int freqIs()
+	public float freqIs()
 	{
 	    return freq;
 	}
