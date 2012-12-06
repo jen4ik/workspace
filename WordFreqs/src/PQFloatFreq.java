@@ -4,15 +4,15 @@ import java.text.DecimalFormat;
 public class PQFloatFreq implements Comparable<PQFloatFreq> {
 	
 	private String word;
-	private float freq;
+	private Double freq;
 
 	DecimalFormat fmt = new DecimalFormat("00000");
 
 
-	public PQFloatFreq(String newWord)
+	public PQFloatFreq(String newWord, Double f)
 	{
 		word = newWord;
-	    freq = 0;
+	    freq = f;
 	}
 	
 	public int compareTo(PQFloatFreq other)
@@ -35,7 +35,7 @@ public class PQFloatFreq implements Comparable<PQFloatFreq> {
 	    return word;
 	}
 	
-	public float freqIs()
+	public Double freqIs()
 	{
 	    return freq;
 	}

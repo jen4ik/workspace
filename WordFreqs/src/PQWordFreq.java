@@ -15,12 +15,6 @@ public class PQWordFreq implements Comparable<PQWordFreq> {
 	    freq = 0;
 	}
 	
-	/*public PQWordFreq(String newWord, int newFreq)
-	{
-		word = newWord;
-	    freq = newFreq;
-	}*/
-	
 	public void inc()
 	{
 	    freq++;
