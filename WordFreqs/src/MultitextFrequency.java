@@ -139,35 +139,43 @@ public class MultitextFrequency {
 		
 		int i;
 		int j;
-		//int itemNum;
+		int wSize;
 		
-		String str = "";
+		String str = "These are the most common words in each of the items:\n";
+		writeOut(pw, str);
 		
 		/*FileWriter fout = new FileWriter(rptName, false);
 		PrintWriter fileout = new PrintWriter(fout,false);		*/
 		
 		for (i = 0; i < sCount; i++) {
-			str = "Item #" + fmt.format(i) + ": "; //13
+			str = "Item #" + fmt.format(i) + ": "; //13 chars
+			wSize = items.get(i).wpqf.size();
 			wItr = items.get(i).wpqf.iterator();
 			tItr = items.get(i).tpq.iterator();
 			
-			for (j = 0; j < 3; j++){
-				str.concat(wItr.next().wordIs());
-				if (j < 2) {
-					str.concat(", ");
+			if (wItr != null) {
+				for (j = 0; (j < 3) && (j < wSize); j++){
+					str.concat(wItr.next().wordIs());
+					if (j < 2) {
+						str.concat(", ");
+					}
 				}
-			}
-			str.concat("; ");
-			
-			for (j = 0; j < 3; j++){
-				str.concat(tItr.next().wordIs());
-				if (j < 2) {
-					str.concat(", ");
+				str.concat("; ");
+				
+				for (j = 0; (j < 3) && (j < wSize); j++){
+					str.concat(tItr.next().wordIs());
+					if (j < 2) {
+						str.concat(", ");
+					}
 				}
+			} else {
+				str.concat("This item didn't have any words that matched the paramters");
 			}
 			str.concat("\n");
+			writeOut(pw, str);
+			//str = "";
 		}
-		writeOut(pw, str);
+		
 		
 		//fileout.close();
 		
@@ -229,7 +237,11 @@ public class MultitextFrequency {
 		PQWordFreq tmp = null;
 		
 		for (i = 0; i < sCount; i++) {
-			itrs.add(items.get(i).wpqf.iterator());			
+			if (items.get(i).wpqf.size() == 0) {
+				itrs.add(null);
+			} else {
+				itrs.add(items.get(i).wpqf.iterator());
+			}
 		}
 		
 		while (cItr.hasNext()) {
@@ -261,6 +273,8 @@ public class MultitextFrequency {
 					//items.get(i).tpq.add(tfWord);
 					items.get(i).tpq.add(new PQFloatFreq(cWord, tfidf(inItem[i], itemCount)));
 					//items.get(i).wpqt.add(tfWord);
+				} else {
+					items.get(i).tpq.add(new PQFloatFreq(cWord, 0.0));
 				}
 			}
 			first = false;
