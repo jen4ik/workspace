@@ -96,8 +96,9 @@ public class PQFrequency {
 	public void validFrequencies () {
 		
 		PQWordFreq wordFromPQ = null;
+		int qSize = fpq.size();
 		
-		for (int count = 1; count <= fpq.size(); count++)
+		for (int count = 1; count <= qSize; count++)
 	    {
 	    	wordFromPQ = (PQWordFreq)fpq.poll();
 	    	
@@ -192,9 +193,9 @@ public class PQFrequency {
 		pqf.validFrequencies();
 	    
 	    // Writing output in DJW format
-	    writeOut(fileout, "----- -----------------\n");
+	    /*writeOut(fileout, "----- -----------------\n");
 	    writeOut(fileout, "size of Priority Queue is: " + pqf.wpq.size() + "\n");
-	    writeOut(fileout, "----- -----------------\n");
+	    writeOut(fileout, "----- -----------------\n");*/
 	    
 	    writeOut(fileout, "\n");
 	    writeOut(fileout, "Freq  Word\n");

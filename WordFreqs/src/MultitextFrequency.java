@@ -16,13 +16,11 @@ public class MultitextFrequency {
 		StringBuffer text;
 		public PriorityQueue<PQWordFreq> fpq; // ordered by frequency
 		public PriorityQueue<PQWordFreq> wpqf; // ordered by alphabet for frequency
-		//public PriorityQueue<PQFloatFreq> wpqt; // ordered by alphabet for tfidf
 		public PriorityQueue<PQFloatFreq> tpq; // ordered by tfidf
 		
 		public tfidfTuple(StringBuffer txt) {
 			fpq = new PriorityQueue<PQWordFreq>(10, new FreqComparator());
 			wpqf = new PriorityQueue<PQWordFreq>(10, new WordComparator());
-			//wpqt = new PriorityQueue<PQFloatFreq>(10, new WordComparator());
 			tpq = new PriorityQueue<PQFloatFreq>(10, new FloatComparator());
 			
 			text = new StringBuffer(txt);
@@ -85,27 +83,18 @@ public class MultitextFrequency {
 				wpqf.add(itr.next());
 			}
 		}
-		
-		/*public void toTPQ () {
-			Iterator<PQFloatFreq> itr = tpq.iterator();
-			while (itr.hasNext()) {
-				wpqt.add((PQFloatFreq)itr);
-				itr.next();
-			}
-		}*/
 	}
 	
 	public String separator;
 	public String rptName = "MultitextReport.txt";
 	public String inputFile;
 	
-	//public int minLen = 6;
 	public int sCount = 0; // number of separator occurences, indicating number of items
 	
 	public PQFrequency corpus;
 	
 	public ArrayList <tfidfTuple> items;
-	public ArrayList <Iterator> itrs;
+	//public ArrayList <Iterator> itrs;
 	
 	public MultitextFrequency (String sprtr, String fileName) {
 		separator = sprtr.toLowerCase();//+ " ";
@@ -114,7 +103,7 @@ public class MultitextFrequency {
 		corpus.minFreq = 6;
 		corpus.minSize = 7;
 		items = new ArrayList<tfidfTuple>();
-		itrs = new ArrayList<Iterator>();
+		//itrs = new ArrayList<Iterator>();
 	}
 	
 	public double tfidf(int wFreq, int iCount) {
@@ -122,7 +111,7 @@ public class MultitextFrequency {
 		 * tfidf(w) = freqInItem(w) * ln(items in corpus / items containing w)
 		 */
 		
-		return Math.log(sCount / iCount) * wFreq;
+		return Math.log((sCount*1.0) / (iCount*1.0)) * (wFreq*1.0);
 	}
 	
 	public void docStats (PrintWriter pw) throws IOException {
@@ -130,8 +119,6 @@ public class MultitextFrequency {
 		 * item number: commonword, lesscommonword, lesslesscommonword; hightfidf, nexttfidf, nextnexttfidf
 		 */
 		
-		/*PQWordFreq freqWords[] = new PQWordFreq[3];
-		PQFloatFreq tfWords[] = new PQFloatFreq[3];*/
 		DecimalFormat fmt = new DecimalFormat("00000");
 		
 		Iterator<PQWordFreq> wItr;
@@ -144,17 +131,19 @@ public class MultitextFrequency {
 		String str = "These are the most common words in each of the items:\n";
 		writeOut(pw, str);
 		
-		/*FileWriter fout = new FileWriter(rptName, false);
-		PrintWriter fileout = new PrintWriter(fout,false);		*/
-		
 		for (i = 0; i < sCount; i++) {
-			str = "Item #" + fmt.format(i) + ": "; //13 chars
+			// For each item in the corpus, create 2 iterators and check for size
 			wSize = items.get(i).wpqf.size();
 			wItr = items.get(i).wpqf.iterator();
 			tItr = items.get(i).tpq.iterator();
 			
-			if (wItr != null) {
+			str = "Item #" + fmt.format(i) + ": "; //13 chars
+			
+			//if (wItr != null) {
+			if (wSize > 0) {
+				// If the size of the alphabetical queue is bigger than 0, stats should be printed
 				for (j = 0; (j < 3) && (j < wSize); j++){
+					// Get at most top 3 words from alphabetical queue
 					str.concat(wItr.next().wordIs());
 					if (j < 2) {
 						str.concat(", ");
@@ -163,22 +152,18 @@ public class MultitextFrequency {
 				str.concat("; ");
 				
 				for (j = 0; (j < 3) && (j < wSize); j++){
+					// Get at most top 3 words from tfidf queue 
 					str.concat(tItr.next().wordIs());
 					if (j < 2) {
 						str.concat(", ");
 					}
 				}
 			} else {
+				// The particular item didn't have any words that matched the criteria, so no stats for it
 				str.concat("This item didn't have any words that matched the paramters");
 			}
-			str.concat("\n");
-			writeOut(pw, str);
-			//str = "";
-		}
-		
-		
-		//fileout.close();
-		
+			writeOut(pw, str + "\n");
+		}		
 	}
 	
 	public void scanCorpus (Scanner words) {
@@ -222,6 +207,8 @@ public class MultitextFrequency {
 	
 	public void calcTFIDF () {
 		
+		
+		
 		Iterator<PQWordFreq> cItr = corpus.wpq.iterator();
 		Iterator<PQWordFreq> iItr = null;
 		
@@ -233,25 +220,31 @@ public class MultitextFrequency {
 		int inItem[] = new int [sCount];
 		
 		String cWord;
-		//String iWord;
-		PQWordFreq tmp = null;
-		
-		for (i = 0; i < sCount; i++) {
-			if (items.get(i).wpqf.size() == 0) {
-				itrs.add(null);
-			} else {
-				itrs.add(items.get(i).wpqf.iterator());
-			}
-		}
+		PQWordFreq tmp = null;		
 		
 		while (cItr.hasNext()) {
+			// Focus on a word in the corpus
 			cWord = cItr.next().wordIs();
+			// Reset the counter of items containing that word
 			itemCount = 0;
+			
+			ArrayList<Iterator> itrs = new ArrayList<Iterator>();
+			
+			for (i = 0; i < sCount; i++) {
+				// Create an array list that will hold all the iterators through all the items
+				if (items.get(i).wpqf.size() == 0) {
+					itrs.add(null);
+				} else {
+					itrs.add(items.get(i).wpqf.iterator());
+				}
+			}
 			
 			for (i = 0; i < sCount; i++) {
 				// Count how many items contains the word
+				
+				// Focus on an interator for one of the items
 				iItr = (Iterator<PQWordFreq>)itrs.get(i);
-				if (iItr != null) {
+				if ((iItr != null) && (iItr.hasNext())) {
 					if (first) {
 						tmp = iItr.next();
 					}
@@ -271,11 +264,12 @@ public class MultitextFrequency {
 					// Create new PQFloat tuple with tfidf score and add to tfidf queue
 					//PQFloatFreq tfWord = ;
 					//items.get(i).tpq.add(tfWord);
-					items.get(i).tpq.add(new PQFloatFreq(cWord, tfidf(inItem[i], itemCount)));
+					Double tfidf = tfidf(inItem[i], itemCount);
+					items.get(i).tpq.add(new PQFloatFreq(cWord, tfidf));
 					//items.get(i).wpqt.add(tfWord);
-				} else {
+				} /*else {
 					items.get(i).tpq.add(new PQFloatFreq(cWord, 0.0));
-				}
+				}*/
 			}
 			first = false;
 		}		
@@ -283,15 +277,12 @@ public class MultitextFrequency {
 	
 	public static void writeOut (PrintWriter fo, String str) {
 		System.out.print(str);
-		fo.print(str);
-		
+		fo.print(str);		
 	}
 	
 	public static void main (String[] args) throws IOException {
 		MultitextFrequency mf = new MultitextFrequency("federalist", "Federalists.dat");
-		PQWordFreq pqWord;
-		
-		
+		PQWordFreq pqWord;		
 		
 		FileReader fin = null;
 		try {
@@ -312,30 +303,8 @@ public class MultitextFrequency {
  		mf.scanItems(); 		
  		mf.calcTFIDF();
  		mf.docStats(fileout);
- 	    
- 		/*
- 	    // Writing output in DJW format
- 	    writeOut(fileout, "----- -----------------\n");
- 	    writeOut(fileout, "size of Priority Queue is: " + mf.corpus.wpq.size() + "\n");
- 	    writeOut(fileout, "----- -----------------\n");
- 	    
- 	    writeOut(fileout, "\n");
- 	    writeOut(fileout, "Freq  Word\n");
- 	    writeOut(fileout, "----- -----------------\n");
- 	    
- 	    // Reporting results in alphabetical order
- 	    while (mf.corpus.wpq.size() != 0)
- 	    {
- 	    	pqWord = (PQWordFreq)mf.corpus.wpq.poll();
- 	    	mf.writeOut(fileout, pqWord.toString() + "\n");
- 	    }
- 	
- 	    writeOut(fileout, "\n");  
- 	    writeOut(fileout, mf.corpus.numWords + " words in the input file.  \n");
- 	    writeOut(fileout, mf.corpus.numValidWords + " of them are at least " + mf.corpus.minSize + " characters.\n");
- 	    writeOut(fileout, mf.corpus.numValidFreqs + " of these occur at least " + mf.corpus.minFreq + " times.\n");
- 	    
- 	    writeOut(fileout, "Program completed.\n");*/
+ 		
+ 		writeOut(fileout, "Program completed\n");
  	    
  	    // Avoiding memory leaks
  	    fileout.close();
