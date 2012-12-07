@@ -92,9 +92,11 @@ public class MultitextFrequency {
 	public int sCount = 0; // number of separator occurences, indicating number of items
 	
 	public PQFrequency corpus;
+	PriorityQueue<PQWordFreq> fullFreqs;
+	PriorityQueue<PQWordFreq> fullWords;
+	
 	
 	public ArrayList <tfidfTuple> items;
-	//public ArrayList <Iterator> itrs;
 	
 	public MultitextFrequency (String sprtr, String fileName) {
 		separator = sprtr.toLowerCase();//+ " ";
@@ -103,15 +105,8 @@ public class MultitextFrequency {
 		corpus.minFreq = 6;
 		corpus.minSize = 7;
 		items = new ArrayList<tfidfTuple>();
-		//itrs = new ArrayList<Iterator>();
-	}
-	
-	public double tfidf(int wFreq, int iCount) {
-		/*
-		 * tfidf(w) = freqInItem(w) * ln(items in corpus / items containing w)
-		 */
-		
-		return Math.log((sCount*1.0) / (iCount*1.0)) * (wFreq*1.0);
+		fullFreqs = new PriorityQueue<PQWordFreq>(10, new FreqComparator());
+		fullFreqs = new PriorityQueue<PQWordFreq>(10, new WordComparator());
 	}
 	
 	public void docStats (PrintWriter pw) throws IOException {
@@ -201,71 +196,68 @@ public class MultitextFrequency {
 		}
 	}
 	
-	public void calcTFIDF () {		
-		Iterator<PQWordFreq> cItr = corpus.wpq.iterator();
-		Iterator<PQWordFreq> iItr = null;
+	public double tfidf(int wFreq, int iCount) {
+		/*
+		 * tfidf(w) = freqInItem(w) * ln(items in corpus / items containing w)
+		 */
 		
+		return Math.log((sCount*1.0) / (iCount*1.0)) * (wFreq*1.0);
+	}
+	
+	public void calcTFIDF () {				
 		int itemCount = 0;
 		int i;
-		int wpqSize = corpus.wpq.size();
+		int wpqSize = fullWords.size(); // Size of PQ of corpus
 		
-		int inItem[] = new int [sCount];
+		int inItem[] = new int [sCount]; // Array to hold frequencies of word in each item
 		
-		PQWordFreq wArr[] = new PQWordFreq[sCount];
-		PQWordFreq corpusArr[] = new PQWordFreq[wpqSize];
+		PQWordFreq wArr[] = new PQWordFreq[sCount]; // Array to hold the top of each alpha queue
+		PQWordFreq corpusArr[] = new PQWordFreq[wpqSize]; // Array to hold corpus in alpha order
 		
-		String cWord;
-		//PQWordFreq tmp = null;
+		//PriorityQueue<PQWordFreq> cWords = new PriorityQueue<PQWordFreq>(10, new WordComparator());
+		//Iterator<PQWordFreq> cItr = corpus.fpq.iterator();
 		
-		//String str;
+		/*while (cItr.hasNext()) {
+			cWords.add(cItr.next());
+		}*/
 		
+		//String cWord;
+		
+		/*
+		 * Transfer all corpus words into array because the iterator is inconcistent
+		 */
 		for (i = 0; i < wpqSize; i++) {
-			corpusArr[i] = corpus.wpq.poll();
+			corpusArr[i] = fullWords.poll();
 		}
 		
+		/*
+		 * Load top word of each item's alpha queue because iterator is inconcistent
+		 */
 		for (i = 0; i < sCount; i++) {
-			if (items.get(i).wpqf.size() != 0) {
+			if (items.get(i).wpqf.size() != 0) { //make sure there's something to poll for
 				wArr[i] = items.get(i).wpqf.poll();
+			} else {
+				wArr[i] = null;
 			}
 		}
 		
-		//while (cItr.hasNext()) {
+		/*
+		 * Focus on a word in the corpus
+		 * Reset the counter of items containing that word
+		 */
 		for (int j = 0; j < wpqSize; j++) {
-			// Focus on a word in the corpus
-			cWord = corpusArr[j].wordIs();
-			// Reset the counter of items containing that word
+			
 			itemCount = 0;
-			
-			ArrayList<Iterator> itrs = new ArrayList<Iterator>();
-			
-			for (i = 0; i < sCount; i++) {
-				// Create an array list that will hold all the iterators through all the items
-				if (items.get(i).wpqf.size() == 0) {
-					itrs.add(null);
-				} else {
-					itrs.add(items.get(i).wpqf.iterator());
-				}
-			}
-			
-			for (i = 0; i < sCount; i++) {
-				iItr = (Iterator<PQWordFreq>)itrs.get(i);
-				if (iItr != null){
-					wArr[i] = iItr.next();
-				} else {
-					wArr[i] = null;
-				}
-			}
 			
 			for (i = 0; i < sCount; i++) {
 				// Count how many items contain the word
 				
 				if (wArr[i] != null) {
-					if (wArr[i].wordIs().equalsIgnoreCase(cWord)) {
+					if (wArr[i].wordIs().equals(corpusArr[j].wordIs())) {
 						itemCount++;
 						inItem[i] = wArr[i].freqIs();
-						iItr = (Iterator<PQWordFreq>)itrs.get(i);
-						if (iItr.hasNext()) {
-							wArr[i] = iItr.next();
+						if (items.get(i).wpqf.size() != 0) { // Poll for a new word from a matching item
+							wArr[i] = items.get(i).wpqf.poll();
 						}
 					} else {
 						inItem[i] = 0;
@@ -273,16 +265,11 @@ public class MultitextFrequency {
 				}
 			}			
 			System.out.println("bla");
-			for (i = 0; i < sCount; i++) {
-				// Calculate tfidf for word and insert into queue
+			for (i = 0; i < sCount; i++) { // Calculate tfidf for word and insert into queue
 				if (inItem[i] > 0) {
 					// Create new PQFloat tuple with tfidf score and add to tfidf queue
 					Double tfidf = tfidf(inItem[i], itemCount);
-					items.get(i).tpq.add(new PQFloatFreq(cWord, tfidf));
-					iItr = (Iterator<PQWordFreq>)itrs.get(i);
-					if (iItr.hasNext()) {
-						iItr.next();
-					}
+					items.get(i).tpq.add(new PQFloatFreq(corpusArr[j].wordIs(), tfidf));
 				} 
 			}
 		}
@@ -312,6 +299,17 @@ public class MultitextFrequency {
  		PrintWriter fileout = new PrintWriter(fout,false);		
  		
  		mf.scanCorpus(wordsIn);
+ 		
+ 		Iterator<PQWordFreq> fitr = mf.corpus.fpq.iterator();
+ 		while (fitr.hasNext()) {
+ 			mf.fullFreqs.add(fitr.next());
+ 		}
+ 		
+ 		Iterator<PQWordFreq> witr = mf.fullFreqs.iterator();
+ 		while (witr.hasNext()) {
+ 			mf.fullWords.add(witr.next());
+ 		}
+ 		
  		mf.corpus.validFrequencies();
  		mf.scanItems(); 		
  		mf.calcTFIDF();

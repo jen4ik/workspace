@@ -117,7 +117,7 @@ public class PQFrequency {
 	 * This method is used to write the same output both to the console and to a file
 	 */
 	public static void writeOut (PrintWriter fo, String str) {
-		System.out.print(str);
+		//System.out.print(str);
 		fo.print(str);
 		
 	}
@@ -207,7 +207,9 @@ public class PQFrequency {
 	    	pqWord = (PQWordFreq)pqf.wpq.poll();
 	    	pqf.writeOut(fileout, pqWord.toString() + "\n");
 	    }
-	
+	    
+	    writeOut(fileout, "The words of length " + pqf.minSize + " and above,");
+	    writeOut(fileout, "with frequency counts of " + pqf.minFreq + " and above:");
 	    writeOut(fileout, "\n");  
 	    writeOut(fileout, pqf.numWords + " words in the input file.  \n");
 	    writeOut(fileout, pqf.numValidWords + " of them are at least " + pqf.minSize + " characters.\n");
