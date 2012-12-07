@@ -18,7 +18,7 @@ public class PQFloatFreq implements Comparable<PQFloatFreq> {
 	
 	public int compareTo(PQFloatFreq other)
 	{
-	    return this.word.compareTo(other.word); 
+	    return this.freq.compareTo(other.freq); 
 	}
 	
 	public boolean equals(PQFloatFreq other)

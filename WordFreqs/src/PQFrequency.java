@@ -46,29 +46,39 @@ public class PQFrequency {
 		PQWordFreq tmp = new PQWordFreq(null);
 		
 		if (pq.peek() == null) {
-			// The queue is empty so we just add the word after incrementing its freq to 1
+			/*
+			 *  The queue is empty so we just add the word after incrementing its freq to 1
+			 */
 			pqw.inc();
 			pq.add(pqw);
 		} else {
-			// The queue is not empty, so we check if the word already in the queue
-			// Take the first thing in the queue so we have something to start from
+			/* 
+			 * The queue is not empty, so we check if the word already in the queue
+			 * 
+			 */			
 			tmp = (PQWordFreq)itr.next();
 			while (itr.hasNext() && !(tmp.compareTo(pqw) == 0)) {
-				// We'll stop iterating if we reach the end of the queue or we found a match to the word
+				/* 
+				 * We'll stop iterating if we reach the end of the queue or we found a match to the word
+				 */
 				tmp = (PQWordFreq)itr.next();						
 			}
 			
 			if (tmp.compareTo(pqw) == 0) {
-				// We stopped looking for things because we found a match so:
-				// 1. Remove from queue
-				// 2. Increase frequency
-				// 3. Add to queue with update frequency
+				/* 
+				 * We stopped looking for things because we found a match so:
+				 * 1. Remove from queue
+				 * 2. Increase frequency
+				 * 3. Add to queue with update frequency
+				 */				
 				itr.remove();
 				tmp.inc();
 				pq.add(tmp);
 			} else {
-				// We stopped searching at the end of the queue and didn't find a match so:
-				// Increment freq to 1 and add to queue
+				/*
+				 *  We stopped searching at the end of the queue and didn't find a match so:
+				 *  Increment freq to 1 and add to queue
+				 */
 				pqw.inc();
 				pq.add(pqw);
 			}
@@ -87,7 +97,9 @@ public class PQFrequency {
 				numValidWords++;
 				word = word.toLowerCase();
 				wordToTry = new PQWordFreq(word);
-				// Adding word to Priority Queue according to frequency
+				/* 
+				 * Adding word to Priority Queue according to frequency
+				 */
 				freqEnqueue(wordToTry, fpq);
 			}
 	    }
@@ -105,8 +117,10 @@ public class PQFrequency {
 	    	if (wordFromPQ.freqIs() >= minFreq)
 	    	{
 	    		numValidFreqs++;
-	    		// If the word matches our criteria, we want to insert it into the helper queue but 
-	    		// we don't want to increase its frequency count again
+	    		/*
+	    		 *  If the word matches our criteria, we want to insert it into the helper queue but
+	    		 *  we don't want to increase its frequency count again 
+	    		 */	    		
 	    		wordFromPQ.dec();
 	    		freqEnqueue(wordFromPQ, wpq);
 	    	}
@@ -117,7 +131,7 @@ public class PQFrequency {
 	 * This method is used to write the same output both to the console and to a file
 	 */
 	public static void writeOut (PrintWriter fo, String str) {
-		//System.out.print(str);
+		System.out.print(str);
 		fo.print(str);
 		
 	}
@@ -205,7 +219,7 @@ public class PQFrequency {
 	    while (pqf.wpq.size() != 0)
 	    {
 	    	pqWord = (PQWordFreq)pqf.wpq.poll();
-	    	pqf.writeOut(fileout, pqWord.toString() + "\n");
+	    	writeOut(fileout, pqWord.toString() + "\n");
 	    }
 	    
 	    writeOut(fileout, "The words of length " + pqf.minSize + " and above,");
