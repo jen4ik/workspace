@@ -204,13 +204,15 @@ public class PQFrequency {
 		FileWriter fout = new FileWriter("report.dat", false);
 		PrintWriter fileout = new PrintWriter(fout,false);		
 		
-		pqf.validFrequencies();
+		pqf.validFrequencies(	);
 	    
 	    // Writing output in DJW format
 	    /*writeOut(fileout, "----- -----------------\n");
 	    writeOut(fileout, "size of Priority Queue is: " + pqf.wpq.size() + "\n");
 	    writeOut(fileout, "----- -----------------\n");*/
 	    
+	    writeOut(fileout, "The words of length " + pqf.minSize + " and above,\n");
+	    writeOut(fileout, "with frequency counts of " + pqf.minFreq + " and above:\n");
 	    writeOut(fileout, "\n");
 	    writeOut(fileout, "Freq  Word\n");
 	    writeOut(fileout, "----- -----------------\n");
@@ -219,7 +221,7 @@ public class PQFrequency {
 	    while (pqf.wpq.size() != 0)
 	    {
 	    	pqWord = (PQWordFreq)pqf.wpq.poll();
-	    	writeOut(fileout, pqWord.toString() + "\n");
+	    	pqf.writeOut(fileout, pqWord.toString() + "\n");
 	    }
 	    
 	    writeOut(fileout, "The words of length " + pqf.minSize + " and above,");
