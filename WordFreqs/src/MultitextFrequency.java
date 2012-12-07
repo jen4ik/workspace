@@ -210,11 +210,9 @@ public class MultitextFrequency {
 		int wpqSize = corpus.wpq.size();
 		
 		int inItem[] = new int [sCount];
-		int itemsIndex[] = new int [sCount];
+		
 		PQWordFreq wArr[] = new PQWordFreq[sCount];
 		PQWordFreq corpusArr[] = new PQWordFreq[wpqSize];
-		
-		ArrayList<ArrayList<PQWordFreq>> itemsArr = new ArrayList<ArrayList<PQWordFreq>>();
 		
 		String cWord;
 		//PQWordFreq tmp = null;
@@ -226,9 +224,8 @@ public class MultitextFrequency {
 		}
 		
 		for (i = 0; i < sCount; i++) {
-			int pqSize = items.get(i).wpqf.size();
-			for (int j = 0; j < pqSize; j++) {
-				itemsArr.get(i).add(items.get(i).wpqf.poll());
+			if (items.get(i).wpqf.size() != 0) {
+				wArr[i] = items.get(i).wpqf.poll();
 			}
 		}
 		
