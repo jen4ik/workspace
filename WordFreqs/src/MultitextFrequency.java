@@ -121,53 +121,49 @@ public class MultitextFrequency {
 		
 		DecimalFormat fmt = new DecimalFormat("00000");
 		
-		Iterator<PQWordFreq> wItr;
-		Iterator<PQFloatFreq> tItr;
-		
 		int i;
 		int j;
-		int wSize;
+		int fSize;
 		
 		String str = "These are the most common words in each of the items:\n";
 		writeOut(pw, str);
 		
 		for (i = 0; i < sCount; i++) {
 			// For each item in the corpus, create 2 iterators and check for size
-			wSize = items.get(i).wpqf.size();
-			wItr = items.get(i).wpqf.iterator();
-			tItr = items.get(i).tpq.iterator();
+			fSize = items.get(i).fpq.size();
 			
 			str = "Item #" + fmt.format(i) + ": "; //13 chars
 			
-			//if (wItr != null) {
-			if (wSize > 0) {
+			if (fSize > 0) {
 				// If the size of the alphabetical queue is bigger than 0, stats should be printed
-				for (j = 0; (j < 3) && (j < wSize); j++){
-					// Get at most top 3 words from alphabetical queue
-					str.concat(wItr.next().wordIs());
+				for (j = 0; (j < 3) && (j < fSize); j++){
+					if (items.get(i).fpq.size() > 0) {
+						str = str + items.get(i).fpq.poll().wordIs();
+					}
 					if (j < 2) {
-						str.concat(", ");
+						str = str + ", ";
 					}
 				}
-				str.concat("; ");
+				str = str + "; ";
 				
-				for (j = 0; (j < 3) && (j < wSize); j++){
+				for (j = 0; (j < 3) && (j < fSize); j++){
 					// Get at most top 3 words from tfidf queue 
-					str.concat(tItr.next().wordIs());
+					if (items.get(i).tpq.size() > 0) {
+						str = str + items.get(i).tpq.poll().wordIs();
+					}
 					if (j < 2) {
-						str.concat(", ");
+						str = str + ", ";
 					}
 				}
 			} else {
 				// The particular item didn't have any words that matched the criteria, so no stats for it
-				str.concat("This item didn't have any words that matched the paramters");
+				str = str + "This item didn't have any words that matched the paramters";
 			}
 			writeOut(pw, str + "\n");
 		}		
 	}
 	
 	public void scanCorpus (Scanner words) {
-		//Scanner words = new Scanner (fr);
 		PQWordFreq wordToTry;
 		String word;
 		StringBuffer sb = new StringBuffer();
@@ -205,26 +201,41 @@ public class MultitextFrequency {
 		}
 	}
 	
-	public void calcTFIDF () {
-		
-		
-		
+	public void calcTFIDF () {		
 		Iterator<PQWordFreq> cItr = corpus.wpq.iterator();
 		Iterator<PQWordFreq> iItr = null;
 		
 		int itemCount = 0;
 		int i;
-		
-		boolean first = true;
+		int wpqSize = corpus.wpq.size();
 		
 		int inItem[] = new int [sCount];
+		int itemsIndex[] = new int [sCount];
+		PQWordFreq wArr[] = new PQWordFreq[sCount];
+		PQWordFreq corpusArr[] = new PQWordFreq[wpqSize];
+		
+		ArrayList<ArrayList<PQWordFreq>> itemsArr = new ArrayList<ArrayList<PQWordFreq>>();
 		
 		String cWord;
-		PQWordFreq tmp = null;		
+		//PQWordFreq tmp = null;
 		
-		while (cItr.hasNext()) {
+		//String str;
+		
+		for (i = 0; i < wpqSize; i++) {
+			corpusArr[i] = corpus.wpq.poll();
+		}
+		
+		for (i = 0; i < sCount; i++) {
+			int pqSize = items.get(i).wpqf.size();
+			for (int j = 0; j < pqSize; j++) {
+				itemsArr.get(i).add(items.get(i).wpqf.poll());
+			}
+		}
+		
+		//while (cItr.hasNext()) {
+		for (int j = 0; j < wpqSize; j++) {
 			// Focus on a word in the corpus
-			cWord = cItr.next().wordIs();
+			cWord = corpusArr[j].wordIs();
 			// Reset the counter of items containing that word
 			itemCount = 0;
 			
@@ -240,39 +251,44 @@ public class MultitextFrequency {
 			}
 			
 			for (i = 0; i < sCount; i++) {
-				// Count how many items contains the word
-				
-				// Focus on an interator for one of the items
 				iItr = (Iterator<PQWordFreq>)itrs.get(i);
-				if ((iItr != null) && (iItr.hasNext())) {
-					if (first) {
-						tmp = iItr.next();
-					}
-					if (tmp.wordIs().equals(cWord)) {
-						itemCount++;
-						inItem[i] = tmp.freqIs();
-						iItr.next();
-					} else {
-						inItem[i] = 0;
-					}
+				if (iItr != null){
+					wArr[i] = iItr.next();
+				} else {
+					wArr[i] = null;
 				}
 			}
 			
 			for (i = 0; i < sCount; i++) {
+				// Count how many items contain the word
+				
+				if (wArr[i] != null) {
+					if (wArr[i].wordIs().equalsIgnoreCase(cWord)) {
+						itemCount++;
+						inItem[i] = wArr[i].freqIs();
+						iItr = (Iterator<PQWordFreq>)itrs.get(i);
+						if (iItr.hasNext()) {
+							wArr[i] = iItr.next();
+						}
+					} else {
+						inItem[i] = 0;
+					}
+				}
+			}			
+			System.out.println("bla");
+			for (i = 0; i < sCount; i++) {
 				// Calculate tfidf for word and insert into queue
 				if (inItem[i] > 0) {
 					// Create new PQFloat tuple with tfidf score and add to tfidf queue
-					//PQFloatFreq tfWord = ;
-					//items.get(i).tpq.add(tfWord);
 					Double tfidf = tfidf(inItem[i], itemCount);
 					items.get(i).tpq.add(new PQFloatFreq(cWord, tfidf));
-					//items.get(i).wpqt.add(tfWord);
-				} /*else {
-					items.get(i).tpq.add(new PQFloatFreq(cWord, 0.0));
-				}*/
+					iItr = (Iterator<PQWordFreq>)itrs.get(i);
+					if (iItr.hasNext()) {
+						iItr.next();
+					}
+				} 
 			}
-			first = false;
-		}		
+		}
 	}
 	
 	public static void writeOut (PrintWriter fo, String str) {

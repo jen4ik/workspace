@@ -1,12 +1,13 @@
-
+//
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class PQFloatFreq implements Comparable<PQFloatFreq> {
 	
 	private String word;
 	private Double freq;
 
-	DecimalFormat fmt = new DecimalFormat("00000");
+	NumberFormat fmt = new DecimalFormat("00.00");
 
 
 	public PQFloatFreq(String newWord, Double f)
